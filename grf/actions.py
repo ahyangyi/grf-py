@@ -1591,6 +1591,9 @@ class AdvancedSpriteLayout(Action, ReferenceableAction):
         self.ground = ground
         self.buildings = buildings
 
+    def _count_sprite(self, sprite):
+        return 1 + sum(self._count_sprite(child_sprite) for child_sprite in sprite.get('child_sprites', []))
+
     def _encode_sprite(self, sprite, aux=False):
         flags = 0
         is_parent = ('extent' in sprite or 'offset' in sprite)
@@ -1620,10 +1623,15 @@ class AdvancedSpriteLayout(Action, ReferenceableAction):
                     assert isinstance(val, Temp)
                     val = val.register
                 res += bytes((val, ))
+
+        for child_sprite in sprite.get('child_sprites', []):
+            res += self._encode_sprite(child_sprite, True)
+
         return res
 
     def get_data(self, context):
-        res = struct.pack('<BBBB', 0x02, self.feature.id, self.ref_id, len(self.buildings) + 0x40)
+        sprite_count = sum(self._count_sprite(x) for x in self.buildings) + self._count_sprite(self.ground) - 1
+        res = struct.pack('<BBBB', 0x02, self.feature.id, self.ref_id, sprite_count + 0x40)
         res += self._encode_sprite(self.ground)
         for s in self.buildings:
             res += self._encode_sprite(s, True)
