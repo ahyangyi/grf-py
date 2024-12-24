@@ -7,7 +7,7 @@ root_path = Path(__file__).parent
 
 install_requires = [
     'nml==0.8.0',
-    'numpy==2.3.4',
+    'numpy>=1.26.0',
     'Pillow==12.0.0',
     'typeguard==4.4.4',
     'lark==1.3.0',
