@@ -212,6 +212,21 @@ class WriteContext:
         self.print(f'Total {self.num_sprites} sprites, cached {self.num_cached}, uncacheable {self.num_uncacheable}. Optimized {self.num_duplicate} duplicates.')
 
 
+class ParameterMapping:
+    def __init__(self, *, grf_parameter=None, first_bit=None, num_bit=None):
+        assert (first_bit is None) == (num_bit is None), "first_bit and num_bit must be both set or both unset"
+        self.grf_parameter = grf_parameter
+        self.first_bit = first_bit
+        self.num_bit = num_bit
+
+    def encode(self, setting_number):
+        if self.grf_parameter is not None:
+            setting_number = self.grf_parameter
+        if self.first_bit is None:
+            return struct.pack('<B', setting_number)
+        return struct.pack('<BBB', setting_number, self.first_bit, self.num_bit)
+
+
 class BaseNewGRF:
     def __init__(self, *, strings=None, id_map_file=None, sprite_cache_path='.cache', fast_sprite_enumeration=False):
         self.generators = []
@@ -995,6 +1010,8 @@ class NewGRF(BaseNewGRF):
             self._props['INFO']['NPAR'] = bytes((len(self._param_data),))
             self._props['INFO']['PARA'] = {}
             for i, p in self._param_data.items():
+                if "MASK" in p:
+                    p["MASK"] = p["MASK"].encode(i)
                 self._props['INFO']['PARA'][i] = p
 
         res = [
@@ -1070,7 +1087,7 @@ class NewGRF(BaseNewGRF):
         ))
         return res
 
-    def add_bool_parameter(self, *, key, name, description, default=None):
+    def add_bool_parameter(self, *, key, name, description, default=None, mapping=None):
         data = {
             'NAME': name,
             'DESC': description,
@@ -1081,10 +1098,13 @@ class NewGRF(BaseNewGRF):
                 raise ValueError('Default value for bool parameter should be bool')
             data['DFLT'] = int(default)
 
+        if mapping is not None:
+            data["MASK"] = mapping
+
         param_id = self.register_parameter(key)
         self._param_data[param_id] = data
 
-    def add_int_parameter(self, *, key, name, description, default=None, limits=None, enum=None):
+    def add_int_parameter(self, *, key, name, description, default=None, limits=None, enum=None, mapping=None):
         data = {
             'NAME': name,
             'DESC': description,
@@ -1106,6 +1126,9 @@ class NewGRF(BaseNewGRF):
                 raise ValueError('Enum should be a dict of {int: Union[str, StringRef]}')
 
             data['VALU'] = enum
+
+        if mapping is not None:
+            data["MASK"] = mapping
 
         param_id = self.register_parameter(key)
         self._param_data[param_id] = data
