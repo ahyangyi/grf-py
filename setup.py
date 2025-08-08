@@ -6,7 +6,7 @@ from pathlib import Path
 root_path = Path(__file__).parent
 
 install_requires = [
-    'nml==0.7.5',
+    'nml>=0.7.5',
     'numpy>=1.26.0',
     'Pillow>=9.4.0',
     'ply==3.11',
