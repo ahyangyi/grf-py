@@ -116,7 +116,9 @@ def save_sprite_images(sprite, data, palette, output_dir, index):
         color_img = Image.fromarray(data[:, :, 0], mode="P")
         color_img.putpalette(palette)
     else:
-        raise RuntimeError(f"Unsupported sprite bpp {bpp} for sprite {sprite.id}.")
+        raise RuntimeError(
+            f"Unsupported sprite bpp {bpp} for sprite index {index} (id {sprite.id})."
+        )
 
     image_name = f"sprite_{index:05d}_id{sprite.id}.png"
     image_path = output_dir / image_name
@@ -135,7 +137,9 @@ def save_sprite_images(sprite, data, palette, output_dir, index):
 
 def extract_4x_sprites(grf_path, output_dir, palette):
     if output_dir.exists():
-        raise RuntimeError(f"Output directory already exists: {output_dir}")
+        raise RuntimeError(
+            f"Output directory already exists: {output_dir}. Remove it or choose a different --output path."
+        )
     output_dir.mkdir(parents=True)
     manifest_path = output_dir / "manifest.csv"
     count = 0
