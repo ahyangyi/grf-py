@@ -1,3 +1,8 @@
 [build-system]
 requires = ["setuptools>=59"]
 build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = [
+    "tqdm>=4.67.3",
+]
