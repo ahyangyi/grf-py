@@ -1351,6 +1351,8 @@ class CargoClass:
     OVERSIZED = 0x400  # vehicles, ...
     POWDERIZED = 0x800  # cement, ...
     NON_POURABLE = 0x1000  # sugar cane, wool or straw bales, ...
+    POTABLE = 0x2000  # Potable / food / clean.
+    NON_POTABLE = 0x4000  # Non-potable / non-food / dirty.
     SPECIAL = 0x8000  # Special cargo, used for refit tricks. (e.g. regearing in NARS)
     NONE = 0  # S  Special value that you can used to instead of 0.
     # ALL_NORMAL_CARGO_CLASSES    Bitmask of all cargo classes except CC_SPECIAL. This is the same as bitmask(CC_PASSENGERS, CC_MAIL, ..., CC_OVERSIZED). Note: This is already a bitmask, don't use the bitmask(..) function with this.
@@ -1373,6 +1375,8 @@ class FRAX:
     FLATBED = 0x400
     POWDER_BULK = 0x800
     WEIRD = 0x1000
+    POTABLE = 0x2000
+    NON_POTABLE = 0x4000
     SPECIAL = 0x8000
     NONE = 0  # Special value that you can used to instead of 0.
 
