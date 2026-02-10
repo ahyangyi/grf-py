@@ -1357,6 +1357,26 @@ class CargoClass:
     # ALL_CARGO_CLASSES   bitmask(CC_SPECIAL) Note: This is already a bitmask, don't use the bitmask(..) function with this.
 
 
+# Alternative cargo class scheme. For documentation, refer to:
+# https://grf.farm/polar-fox/1.4.0/frax.html
+class FRAX:
+    PASSENGERS = 0x1
+    MAIL = 0x2
+    EXPRESS = 0x4
+    ARMOURED = 0x8
+    OPEN_BULK = 0x10
+    PIECE_GOODS = 0x20
+    LIQUID_BULK = 0x40
+    REFRIGERATED = 0x80
+    GAS_BULK = 0x100
+    COVERED_BULK = 0x200
+    FLATBED = 0x400
+    POWDER_BULK = 0x800
+    WEIRD = 0x1000
+    SPECIAL = 0x8000
+    NONE = 0  # Special value that you can used to instead of 0.
+
+
 class DefineMultiple(Action):
     def __init__(self, *, feature, first_id, props, count=None):
         assert isinstance(feature, Feature)
